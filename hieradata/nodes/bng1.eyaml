@@ -1,0 +1,31 @@
+---
+classes:
+  - profile::nbn::bng
+
+nbn::bng::config:
+  iana: 
+    - 2400:3120:fff0::/48
+  iapd:
+    - 2400:3120:fff1::/48
+
+telegraf::inputs:
+  exec:
+    - commands:
+      - accel-cmd show sessions | grep active | wc -l
+
+
+nbn::nni::bng:
+ - description: "Bassendean (6BSD) CVC 1"
+   interfaceName: "6BSD-1"
+   vxlanID: 10001
+   enabled: true
+
+ - description: "Cheltenham (3CTA) CVC 1"
+   interfaceName: "3CTA-1"
+   vxlanID: 10002
+   enabled: true
+
+ - description: "Bundamba (4BDB) CVC 1"
+   interfaceName: "4BDB-1"
+   vxlanID: 10003
+   enabled: true

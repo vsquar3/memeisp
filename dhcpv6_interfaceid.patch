@@ -1,0 +1,101 @@
+diff --git a/accel-pppd/ipv6/dhcpv6.h b/accel-pppd/ipv6/dhcpv6.h
+index 32ee715..c0cff41 100644
+--- a/accel-pppd/ipv6/dhcpv6.h
++++ b/accel-pppd/ipv6/dhcpv6.h
+@@ -8,7 +8,7 @@
+ 
+ #define __packed __attribute__((packed))
+ 
+-#define DHCPV6_CLIENT_PORT 546
++#define DHCPV6_CLIENT_PORT 547
+ #define DHCPV6_SERV_PORT 547
+ 
+ #define D6_OPTION_CLIENTID         1
+@@ -168,6 +168,7 @@ struct dhcpv6_relay {
+ 	int hop_cnt;
+ 	struct in6_addr link_addr;
+ 	struct in6_addr peer_addr;
++	struct dhcpv6_opt_hdr *intf_id;
+ 	void *hdr;
+ };
+ 
+diff --git a/accel-pppd/ipv6/dhcpv6_packet.c b/accel-pppd/ipv6/dhcpv6_packet.c
+index 4173ba7..e07c323 100644
+--- a/accel-pppd/ipv6/dhcpv6_packet.c
++++ b/accel-pppd/ipv6/dhcpv6_packet.c
+@@ -107,7 +107,7 @@ struct dhcpv6_packet *dhcpv6_packet_parse(const void *buf, size_t size)
+ 	struct dhcpv6_opt_hdr *opth;
+ 	struct dhcpv6_relay *rel;
+ 	struct dhcpv6_relay_hdr *rhdr;
+-	void *ptr, *endptr;
++	void *ptr, *endptr, *endptr1;
+ 
+ 	if (size < sizeof(struct dhcpv6_msg_hdr)) {
+ 		if (conf_verbose)
+@@ -146,9 +146,11 @@ struct dhcpv6_packet *dhcpv6_packet_parse(const void *buf, size_t size)
+ 		rel->hop_cnt = rhdr->hop_cnt;
+ 		memcpy(&rel->link_addr, &rhdr->link_addr, sizeof(rel->link_addr));
+ 		memcpy(&rel->peer_addr, &rhdr->peer_addr, sizeof(rel->peer_addr));
++		rel->intf_id = NULL;
+ 
+ 		list_add_tail(&rel->entry, &pkt->relay_list);
+ 
++		endptr1 = NULL;
+ 		ptr = rhdr->data;
+ 		while (ptr < endptr) {
+ 			opth = ptr;
+@@ -160,11 +162,19 @@ struct dhcpv6_packet *dhcpv6_packet_parse(const void *buf, size_t size)
+ 
+ 			if (opth->code == htons(D6_OPTION_RELAY_MSG)) {
+ 				pkt->hdr = (struct dhcpv6_msg_hdr *)opth->data;
+-				endptr = opth->data + sizeof(*opth) + ntohs(opth->len);
+-			}
++				endptr1 = opth->data + ntohs(opth->len);
++			} else if (opth->code == htons(D6_OPTION_INTERFACE_ID))
++				rel->intf_id = opth;
+ 
+ 			ptr += sizeof(*opth) + ntohs(opth->len);
+ 		}
++		if (!endptr1) {
++			log_warn("dhcpv6: endptr failure\n");
++			goto error;
++		}
++
++		endptr = endptr1;
++
+ 	}
+ 
+ 	ptr = pkt->hdr->data;
+@@ -271,8 +281,12 @@ void dhcpv6_fill_relay_info(struct dhcpv6_packet *pkt)
+ 		memcpy(&rhdr->link_addr, &rel->link_addr, sizeof(rhdr->link_addr));
+ 		memcpy(&rhdr->peer_addr, &rel->peer_addr, sizeof(rhdr->peer_addr));
+ 		opt = (struct dhcpv6_opt_hdr *)rhdr->data;
++		if (rel->intf_id) {
++			memcpy(opt, rel->intf_id, sizeof(struct dhcpv6_opt_hdr) + ntohs(rel->intf_id->len));
++			opt = (struct dhcpv6_opt_hdr *)(opt->data + ntohs(rel->intf_id->len));
++		}
+ 		opt->code = htons(D6_OPTION_RELAY_MSG);
+-		opt->len = (uint8_t *)pkt->endptr - rhdr->data;
++		opt->len = htons((void *)pkt->endptr - (void *)opt->data);
+ 	}
+ 
+ 	rel = list_entry(pkt->relay_list.next, typeof(*rel), entry);
+@@ -285,6 +299,7 @@ struct dhcpv6_packet *dhcpv6_packet_alloc_reply(struct dhcpv6_packet *req, int t
+ 	struct dhcpv6_packet *pkt = _malloc(sizeof(*pkt) + BUF_SIZE);
+ 	struct dhcpv6_option *opt;
+ 	struct dhcpv6_relay *rel;
++	int intf_id_len;
+ 
+ 	if (!pkt) {
+ 		log_emerg("out of memory\n");
+@@ -300,8 +315,9 @@ struct dhcpv6_packet *dhcpv6_packet_alloc_reply(struct dhcpv6_packet *req, int t
+ 
+ 	while (!list_empty(&req->relay_list)) {
+ 		rel = list_entry(req->relay_list.next, typeof(*rel), entry);
++		intf_id_len = rel->intf_id ? (sizeof(struct dhcpv6_opt_hdr) + ntohs(rel->intf_id->len)) : 0;
+ 		rel->hdr = (void *)pkt->hdr;
+-		pkt->hdr = (void *)rel->hdr + sizeof(struct dhcpv6_relay_hdr) + sizeof(struct dhcpv6_opt_hdr);
++		pkt->hdr = (void *)rel->hdr + sizeof(struct dhcpv6_relay_hdr) + sizeof(struct dhcpv6_opt_hdr) + intf_id_len;
+ 		list_move_tail(&rel->entry, &pkt->relay_list);
+ 	}
+ 

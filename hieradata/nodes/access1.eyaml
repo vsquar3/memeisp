@@ -1,0 +1,29 @@
+---
+classes:
+  - 'profile::nbn::access'
+
+nbn::nni::access:
+ - description: "Bassendean (6BSD) CVC 1"
+   interfaceName: "6BSD-1"
+   parentInterface: "ens18.200"
+   outerVLAN: 3051
+   vxlanID: 10001
+   cvcLimit: 100
+   enabled: true
+
+ - description: "Cheltenham (3CTA) CVC 1"
+   interfaceName: "3CTA-1"
+   parentInterface: "ens18.200"
+   outerVLAN: 3085
+   vxlanID: 10002
+   cvcLimit: 100
+   enabled: true
+
+ - description: "Bundamba (4BDB) CVC 1"
+   interfaceName: "4BDB-1"
+   parentInterface: "ens18.200"
+   outerVLAN: 3176
+   vxlanID: 10003
+   cvcLimit: 100
+   enabled: true
+

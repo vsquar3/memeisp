@@ -1,0 +1,178 @@
+---
+lookup_options:
+  "^.*$":
+    merge:
+      strategy: deep
+      merge_hash_arrays: true
+
+classes:
+ - 'profile::base'
+
+profile::base::timezone: 'Australia/Perth'
+
+ntp::servers:
+  - 0.au.pool.ntp.org
+  - 1.au.pool.ntp.org
+
+profile::users::root_password: >
+  ENC[PKCS7,MIIBiQYJKoZIhvcNAQcDoIIBejCCAXYCAQAxggEhMIIBHQIBAD
+  AFMAACAQEwDQYJKoZIhvcNAQEBBQAEggEAK2qRJVwXFhOABR4bXk0OMKiP+A
+  k0jNQRT78cGSOYTCORYVPA4QvI3nUkN8PzLYW8Lqls1pCdbVSx/67Zb1bX73
+  x18wmYBycPQgQoDn+0huRM1fmDJJivejV9Ey5sIZ023yHUPO4pOwpfS9pvb4
+  vFP5sFbvOJaoK44OqLK7I8ii6YDho15H2RpCfM5JXGQLKcvIbDG7RxbkGbwV
+  5rcZ2IzL0VI8JUDkBOltuC6A5iNoiFYXiJrw71wOCKX/7pOtfZZYLL6vnxft
+  MG1/Dl9O1qRK2L/FxW9KP1EIoD/63nDFB7e3GYB0qofoBaCRtjiHrxtVLBmd
+  RTPEBHPU+BKWNycDBMBgkqhkiG9w0BBwEwHQYJYIZIAWUDBAEqBBBKe8GD7l
+  2sfzSMEaZHsWTQgCAylgj12l7+VNollLHn4Vl7Nk8jLoH3s2YbncBELpQbbg
+  ==]
+
+profile::users::root_ssh_keys:
+  - desc: 'Brody Stockel <brody@stockel.id.au>'
+    type: 'ssh-ed25519'
+    key: 'AAAAC3NzaC1lZDI1NTE5AAAAIKIK6G8erMgpDZk3opkQXvgfpH2oX3Y0HAvZVentiX2H'
+
+profile::users::system_users:
+  - username: brodys
+    ssh_keys:
+      - desc: 'Brody Stockel <brody@stockel.id.au>'
+        type: 'ssh-ed25519'
+        key: 'AAAAC3NzaC1lZDI1NTE5AAAAIKIK6G8erMgpDZk3opkQXvgfpH2oX3Y0HAvZVentiX2H'
+    groups:
+      - sudo
+    password: >
+        ENC[PKCS7,MIIBeQYJKoZIhvcNAQcDoIIBajCCAWYCAQAxggEhMIIBHQIBAD
+        AFMAACAQEwDQYJKoZIhvcNAQEBBQAEggEAKuBdpA0CDwo1upiHNByr5sC/2C
+        Z7vq4yjl0wJjvSEDuv26Wbj0xO90MqT79l1cNOKx0H0hhAoX70prUZSKpSyt
+        0iPod1W2GguKhLiI6yPfckZeqxh5VzDbxuJVfb88209BFrYyHjuy0N67jFhT
+        hRHZCAY99Du031u9Ri2hKDDUuLt5J13oTzrIWPSlnlq2Row4+wj8AuW6gsiY
+        p0RIk8k7qluy3x4h7Y1Dm0nnaaq3NYjHOpBpNzLbvol1PR4NNjAe7iJ7uygJ
+        xh5dBiU45mtY/Slx3aVyscZAcGtzGywtsGnde14Rf2cKHXkaNn92JykFKuNn
+        X/e6zlVrl8DrXj+jA8BgkqhkiG9w0BBwEwHQYJYIZIAWUDBAEqBBA1QXognx
+        0KjrfwNfOV47SQgBAAZUcNGXUyaLEmYqWqZqfG]
+
+nbn::bng::config:
+  dns_v6:
+    - 2606:4700:4700::1111
+    - 2001:4860:4860::8844
+  dns_v4:
+    - 1.1.1.1
+    - 8.8.8.8
+  radius_server: 103.176.61.15
+  radius_secret: >
+    ENC[PKCS7,MIIBeQYJKoZIhvcNAQcDoIIBajCCAWYCAQAxggEhMIIBHQIBAD
+    AFMAACAQEwDQYJKoZIhvcNAQEBBQAEggEAvPeFgeMryKeDvHhz0jpJIjLlMD
+    UD/TwXZnYLK/T1XVkHbjEXZJKxl6xNC30BkrMqCr5pvJ2U+SXZh6bUpaPP/k
+    SbY5+Jj5zN4WsnO3IMeXyalJ6Slv9xKVk5KkuQRZynx6sN0KK35YbYROm3iY
+    hBqhGFyzaD2lRjhz+Nmgm59+7Af6Vbjn27t1q4K6ymENcfSVieJYf2TL/nDZ
+    ZxqU4H8ypj9GCN7bAO1VYCNVpgYz4bO2c2/cpwqF7n8CFsbsy0NOk2nnXyKk
+    w/VkROKdYjSvvEKzjx2jh+95LDJ0O6CIgNJploYtAYwwQ3uFY7Z8s2TgHYoP
+    uvj+NccFkccaYETTA8BgkqhkiG9w0BBwEwHQYJYIZIAWUDBAEqBBA6Ht81C6
+    sruH09LzyfSMlrgBClkUUKxTehwrcecU2G0GJN]
+  gateways_v4:
+    - 100.64.159.254/20
+    - 103.176.61.126/26
+
+nbn::radius::healthcheck_secret: >
+  ENC[PKCS7,MIIBeQYJKoZIhvcNAQcDoIIBajCCAWYCAQAxggEhMIIBHQIBAD
+  AFMAACAQEwDQYJKoZIhvcNAQEBBQAEggEAuaKDqQlngOqwhoS4ZSdWBZ1mI2
+  mkWmAumV75JNlihGjqwf26cUNzn5+wsfhybSlREx31XGdH3zNiRlrTzXfoPf
+  zWXVu7ppqQqeNrRB2Avn8Sh5yJr56xbvWgsO5L5IA0jlrBkAolGCNaOEyMPX
+  g7jSfj1CvHJ4Vtri3Ct5r6W1efZjm/hEyBvwUbOLDiAMYrsNgPjONXGgR5IF
+  SmzPNC61SIvVMSB+zEJUgwYmWK/JLkcNn9JcosTMJZsEHbRLcqeBxir90gjw
+  ckAQnvOD2QQjL22C56yXQ0OsqGEwSIKqT+QCJlIIwGyeqDawuMPTN9h1OA5a
+  KeHVIbmA/whd4c0jA8BgkqhkiG9w0BBwEwHQYJYIZIAWUDBAEqBBDVF7/O1/
+  0y76XxJ+3GrfdEgBB4zaeuRUQbOS7/mcimqaau]
+
+nbn::radius::nas:
+  - name: bng1
+    ip: 103.176.61.2
+  - name: bng2
+    ip: 103.176.61.3
+  
+fail2ban::action: 'action_mb'
+fail2ban::bantime: 600
+fail2ban::email: "admin@%{::domain}"
+fail2ban::sender: "fail2ban@%{::fqdn}"
+fail2ban::jails:
+  - 'ssh'
+  - 'ssh-ddos'
+fail2ban::maxretry: 3
+fail2ban::whitelist:
+  - '127.0.0.1/8'
+
+syslog::syslog_server: 103.176.61.15
+syslog::allowed_subnets:
+  - 2400:3120:ffff::/48
+  - 103.176.61.0/26
+
+monitoring::server_ips:
+  - 45.76.116.70
+  - 2001:19f0:5801:429:5400:04ff:fe16:8ebc
+
+
+telegraf::inputs:
+  cpu:
+    - percpu: true
+      totalcpu: true
+  exec:
+    - commands:
+      - who | wc -l
+    - commands:
+      - cat /proc/uptime | awk '{print $1}'
+  mem: [{}]
+  io: [{}]
+  net: [{}]
+  disk: [{}]
+  swap: [{}]
+  system: [{}]
+telegraf::outputs:
+  prometheus_client:
+    listen: ":9273"
+
+nbn::avcs:
+  - name: healthcheck
+    pass: healthcheck
+    cgnat: 0
+    ipaddr: 0.0.0.0
+
+  - name: AVC000156784003
+    pass: 123
+    cgnat: 1
+    ipaddr: 100.64.144.101
+    speed: 13516/1126
+
+  - name: AVC000156784090
+    pass: 123
+    cgnat: 1
+    ipaddr: 100.64.144.102
+    speed: 28160/11264
+
+  - name: AVC000156784948
+    pass: 123
+    cgnat: 1
+    ipaddr: 100.64.144.103
+    speed: 28160/11264
+
+  - name: AVC400040472665
+    pass: 123
+    cgnat: 1
+    ipaddr: 100.64.144.104
+    speed: 56320/22528
+
+  - name: AVC400040472736
+    pass: 123
+    cgnat: 1
+    ipaddr: 100.64.144.105
+    speed: 56320/22528
+
+  - name: AVC000156785492
+    pass: 123
+    cgnat: 0
+    ipaddr: 103.176.61.65
+    speed: 56320/22528
+
+  - name: AVC000157034955
+    pass: 123
+    cgnat: 1
+    ipaddr: 100.64.144.106
+    speed: 56320/22528

@@ -1,0 +1,30 @@
+---
+classes:
+  - profile::nbn::bng
+
+nbn::bng::config:
+  iana: 
+    - 2400:3120:fff2::/48
+  iapd:
+    - 2400:3120:fff3::/48
+
+telegraf::inputs:
+  exec:
+    - commands:
+      - accel-cmd show sessions | grep active | wc -l
+
+nbn::nni::bng:
+ - description: "Applecross (6APP) CVC 1"
+   interfaceName: "6APP-1"
+   vxlanID: 10004
+   enabled: true
+
+ - description: "Lidcombe (2LID) CVC 1"
+   interfaceName: "2LID-1"
+   vxlanID: 10005
+   enabled: true
+
+ - description: "Prospect (5PRO) CVC 1"
+   interfaceName: "5PRO-1"
+   vxlanID: 10006
+   enabled: true

@@ -1,0 +1,28 @@
+---
+classes:
+  - 'profile::nbn::access'
+
+nbn::nni::access:
+ - description: "Applecross (6APP) CVC 1"
+   interfaceName: "6APP-1"
+   parentInterface: "ens18.200"
+   outerVLAN: 3058
+   vxlanID: 10004
+   cvcLimit: 100
+   enabled: true
+
+ - description: "Lidcombe (2LID) CVC 1"
+   interfaceName: "2LID-1"
+   parentInterface: "ens18.200"
+   outerVLAN: 3144
+   vxlanID: 10005
+   cvcLimit: 100
+   enabled: true
+
+ - description: "Prospect (5PRO) CVC 1"
+   interfaceName: "5PRO-1"
+   parentInterface: "ens18.200"
+   outerVLAN: 3148
+   vxlanID: 10006
+   cvcLimit: 100
+   enabled: true
