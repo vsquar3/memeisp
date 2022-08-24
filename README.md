@@ -1,6 +1,6 @@
 # memeISP Puppet Data
 
-Within is the data related to the deployment of Brody Stockels memeISP, as shown @ AusNOG 2022
+Within is the data related to the deployment of the memeISP, as shown @ AusNOG 2022
 
 - `hieradata/` : The puppet Hiera data containing the configurations of the deployment
 - `dhcpv6_interfaceid.patch` : A patch for accel-ppp to conform to the Australian NBN way of doing DHCPv6 on their NEBS platform. (This patch will apply to accel-ppp as of commit 61ba3af1d1e204df000fd78add1dbe1139eb5df7)
